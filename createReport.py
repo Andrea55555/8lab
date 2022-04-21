@@ -1,5 +1,5 @@
 from parseAux import parseAux
-import math 
+import math
 
 # Отчёт о состоянии системы:
 # Пользователи системы: 'root', 'user1', ...
@@ -29,6 +29,7 @@ userKey = 'USER'
 procNameKey = 'COMMAND'
 memResourceKey = '%MEM'
 cpuResourceKey = '%CPU'
+
 
 def countStats(processes):
     def updateMostRamIntensiveProc(proc, counter):
@@ -82,14 +83,12 @@ def countStats(processes):
     totalUtilisationCounter = createTotalUtilisationCounter()
     mostRamIntensiveProcCounter = createMostRamIntensiveProcCounter(processes[0])
     mostCpuIntensiveProcCounter = createMostCpuIntensiveProcCounter(processes[0])
-    
+
     for process in processes:
         updateMostRamIntensiveProc(process, mostRamIntensiveProcCounter)
         updateMostCpuIntensiveProc(process, mostCpuIntensiveProcCounter)
         updateTotalUtilisationCounter(process, totalUtilisationCounter)
         updateUserProcCounter(process, usersProcessCount)
-
- 
 
     counters = {
         'mostRamIntensiveProc': mostRamIntensiveProcCounter,
@@ -100,6 +99,7 @@ def countStats(processes):
     }
 
     return counters
+
 
 def formatReport(counters):
     mostRamIntensiveProc = counters['mostRamIntensiveProc']
@@ -112,7 +112,7 @@ def formatReport(counters):
     reports = []
 
     reportHeader = 'Отчёт о состоянии системы:\n'
-    
+
     reports = []
 
     def createUsersReport():
@@ -120,7 +120,7 @@ def formatReport(counters):
         users = usersProcess.keys()
         report = f'{label}:\n{", ".join(users)}'
         return report
-        
+
     def createProcessTotalCountReport():
         label = 'Процессов запущено'
         report = f'{label}: {processTotalCount}'
@@ -129,11 +129,11 @@ def formatReport(counters):
     def createUserProceesReport():
         def converUserProcDictToStr(userProc):
             userName, procsCount = userProc
-            return f'{userName}: {procsCount}'        
+            return f'{userName}: {procsCount}'
 
-        usersProcessCountReportList = list(map(converUserProcDictToStr, usersProcess.items())) 
+        usersProcessCountReportList = list(map(converUserProcDictToStr, usersProcess.items()))
         usersProcessCountReportStr = "\n".join(usersProcessCountReportList)
-        
+
         label = f'Пользовательских процессов'
         report = f'{label}:\n{usersProcessCountReportStr}'
         return report
@@ -142,11 +142,11 @@ def formatReport(counters):
         # Всего памяти используется: 45.7%
         # Всего CPU используется: 33.2%
 
-        cpuVal = math.floor(totalUtilisation[cpuResourceKey])
-        ramVal = math.floor(totalUtilisation[memResourceKey])
+        cpuVal = round(totalUtilisation[cpuResourceKey], 2)
+        ramVal = round(totalUtilisation[memResourceKey], 2)
         labelRam = 'Всего памяти используется'
         labelCpu = 'Всего CPU используется'
-        
+
         ramReport = f'{labelRam}: {ramVal}%'
         cpuReport = f'{labelCpu}: {cpuVal}%'
         return '\n'.join([ramReport, cpuReport])
@@ -154,7 +154,7 @@ def formatReport(counters):
     def createMostRamIntensiveProcReport():
         counter = mostRamIntensiveProc
         res = memResourceKey
-        
+
         procName = counter[procNameKey][:20]
         resVal = counter[res]
 
@@ -165,14 +165,13 @@ def formatReport(counters):
     def createMostCpuIntensiveProcReport():
         counter = mostCpuIntensiveProc
         res = cpuResourceKey
-        
+
         procName = counter[procNameKey][:20]
         resVal = counter[res]
 
         label = 'Больше всего CPU использует'
         report = f'{label}: {procName}, {res}: {resVal}'
         return report
-  
 
     reports.append(reportHeader)
     reports.append(createUsersReport())
@@ -182,11 +181,12 @@ def formatReport(counters):
     reports.append(createTotalResourceUtilisation())
     reports.append(createMostRamIntensiveProcReport())
     reports.append(createMostCpuIntensiveProcReport())
-    
+
     return '\n'.join(reports)
 
-    
     # Отчёт о состоянии системы:
+
+
 # Пользователи системы: 'root', 'user1', ...
 # Процессов запущено: 833
 # Пользовательских процессов:
@@ -201,5 +201,6 @@ def formatReport(counters):
 
 def createReport():
     return formatReport(countStats(parseAux()))
-    
+
+
 print(createReport())
