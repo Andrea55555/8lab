@@ -60,14 +60,14 @@ def countStats(processes):
 
     def createMostRamIntensiveProcCounter(process):
         counter = {}
-        counter[procNameKey] = process[procNameKey],
+        counter[procNameKey] = process[procNameKey]
         counter[memResourceKey] = process[memResourceKey]
 
         return counter
 
     def createMostCpuIntensiveProcCounter(process):
         counter = {}
-        counter[procNameKey] = process[procNameKey],
+        counter[procNameKey] = process[procNameKey]
         counter[cpuResourceKey] = process[cpuResourceKey]
 
         return counter
